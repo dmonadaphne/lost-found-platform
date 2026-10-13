@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>lost+found ✦ find your stuff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800;12..96,900&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#fdf6e3;
+  --paper:#ffffff;
+  --ink:#0a0a1a;
+  --ink-soft:#1a1a2e;
+  --muted:#6b6b8a;
+  --line:#0a0a1a;
+  --lost:#ffe600;
+  --lost-ink:#1a1400;
+  --found:#00d4ff;
+  --found-2:#7c3aed;
+  --hot:#ff2e93;
+  --lime:#c6ff00;
+  --ok:#00e676;
+  --bad:#ff1744;
+  --warn:#ff9100;
+  --radius:24px;
+  --radius-sm:14px;
+  --radius-pill:999px;
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Hanken Grotesk',system-ui,sans-serif;
+  --mono:'Space Mono',monospace;
+  --shadow-brutal:6px 6px 0 var(--ink);
+  --shadow-brutal-sm:4px 4px 0 var(--ink);
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(circle at 15% 20%, #ffe8f0 0%, transparent 45%),
+    radial-gradient(circle at 85% 10%, #e0f7ff 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, #fff5cc 0%, transparent 45%),
+    radial-gradient(circle at 10% 90%, #f0e6ff 0%, transparent 40%);
+  background-attachment:fixed;
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:1rem;
+  line-height:1.55;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+h1,h2,h3{font-family:var(--display);line-height:1;margin:0 0 .6rem;letter-spacing:-.03em}
+
+h1{
+  font-size:clamp(2.5rem,8vw,5.5rem);
+  font-weight:900;
+  text-transform:uppercase;
+  line-height:.9;
+  letter-spacing:-.05em;
+}
+
+h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--hot) 0%,var(--found-2) 50%,var(--found) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+}
+
+h2{
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:-.03em;
+}
+
+h3{font-size:1.25rem;font-weight:800;text-transform:uppercase;letter-spacing:-.01em}
+
+a{color:var(--found-2);text-decoration-thickness:2px;text-underline-offset:3px;font-weight:600}
+a:hover{color:var(--hot)}
+
+:focus-visible{outline:4px solid var(--hot);outline-offset:4px;border-radius:6px}
+
+.muted{color:var(--muted)}
+
+.lead{font-size:1.15rem;max-width:60ch;color:var(--ink-soft);font-weight:500}
+
+.page{max-width:1200px;margin:0 auto;padding:2rem 1.5rem 5rem;position:relative;z-index:2}
+.page.narrow{max-width:820px}
+
+.row{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
+
+.code{
+  background:var(--lime);
+  border:2px solid var(--ink);
+  padding:.2rem .7rem;
+  border-radius:var(--radius-sm);
+  word-break:break-all;
+  font-family:var(--mono);
+  font-weight:700;
+  font-size:.9rem;
+  box-shadow:var(--shadow-brutal-sm);
+}
+
+/* NAV */
+.nav{
+  position:sticky;top:1rem;z-index:100;
+  margin:1rem auto 0;
+  max-width:1160px;
+  width:calc(100% - 2rem);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1.5rem;
+  padding:.8rem 1.2rem .8rem 1.4rem;
+  background:var(--paper);
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius-pill);
+  box-shadow:var(--shadow-brutal);
+  flex-wrap:wrap;
+}
+
+.brand{
+  font-family:var(--display);
+  font-weight:900;
+  font-size:1.35rem;
+  color:var(--ink);
+  text-decoration:none;
+  display:flex;align-items:center;gap:.6rem;
+  text-transform:uppercase;
+  letter-spacing:-.04em;
+}
+
+.brand-mark{
+  width:32px;height:22px;
+  background:var(--lost);
+  border:2.5px solid var(--ink);
+  border-radius:8px;
+  position:relative;
+  transform:rotate(-6deg);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:2px 2px 0 var(--ink);
+  display:inline-block;
+}
+
+.brand:hover .brand-mark{transform:rotate(12deg) scale(1.15)}
+
+.brand-mark::after{
+  content:'';
+  position:absolute;left:50%;top:50%;
+  width:7px;height:7px;
+  background:var(--ink);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+}
+
+.nav-links{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+
+.nav-links a:not(.btn){
+  color:var(--ink);
+  text-decoration:none;
+  font-weight:700;
+  padding:.3rem 0;
+  border-bottom:3px solid transparent;
+  transition:all .2s;
+  font-size:.9rem;
+  text-transform:uppercase;
+  letter-spacing:.02em;
+}
+
+.nav-links a:not(.btn):hover{border-color:var(--hot);transform:translateY(-2px)}
+
+.nav-links a.active{
+  border-color:transparent;
+  background:var(--lost);
+  padding:.3rem .8rem;
+  border-radius:var(--radius-pill);
+  box-shadow:2px 2px 0 var(--ink);
+}
+
+.nav-toggle{
+  display:none;
+  background:var(--lost);
+  border:2.5px solid var(--ink);
+  color:var(--ink);
+  padding:.5rem 1rem;
+  border-radius:var(--radius-pill);
+  font:800 .9rem var(--body);
+  cursor:pointer;
+  box-shadow:3px 3px 0 var(--ink);
+  transition:all .15s;
+  text-transform:uppercase;
+}
+
+.nav-toggle:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  border:2.5px solid var(--ink);
+  background:var(--paper);
+  color:var(--ink);
+  font:800 .9rem var(--body);
+  padding:.65rem 1.2rem;
+  border-radius:var(--radius-pill);
+  cursor:pointer;
+  text-decoration:none;
+  transition:all .15s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:var(--shadow-brutal-sm);
+  text-transform:uppercase;
+  letter-spacing:.01em;
+  user-select:none;
+  font-family:var(--body);
+}
+
+.btn:hover:not(:disabled){transform:translate(-3px,-3px);box-shadow:7px 7px 0 var(--ink)}
+.btn:active:not(:disabled){transform:translate(1px,1px);box-shadow:2px 2px 0 var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.btn-dark{background:var(--ink);color:var(--lost);border-color:var(--ink);box-shadow:4px 4px 0 var(--hot)}
+.btn-dark:hover:not(:disabled){box-shadow:7px 7px 0 var(--hot)}
+
+.nav .btn-dark{background:var(--lost);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.nav .btn-quiet{background:var(--paper);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+
+.btn-lost{background:var(--lost);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.btn-lost:hover:not(:disabled){box-shadow:7px 7px 0 var(--ink)}
+
+.btn-found{background:var(--found);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.btn-found:hover:not(:disabled){box-shadow:7px 7px 0 var(--ink)}
+
+.btn-quiet{background:var(--paper);color:var(--ink)}
+
+.btn-small{padding:.4rem .9rem;font-size:.78rem;box-shadow:3px 3px 0 var(--ink)}
+.btn-small:hover:not(:disabled){box-shadow:5px 5px 0 var(--ink)}
+
+.btn-big{padding:1rem 1.6rem;font-size:1rem;box-shadow:6px 6px 0 var(--ink)}
+.btn-big:hover:not(:disabled){box-shadow:9px 9px 0 var(--ink)}
+
+/* MARQUEE */
+.marquee{
+  overflow:hidden;
+  background:var(--ink);
+  color:var(--lost);
+  padding:.65rem 0;
+  border-top:2.5px solid var(--ink);
+  border-bottom:2.5px solid var(--ink);
+  margin-top:0;
+  position:relative;
+  z-index:2;
+}
+
+.marquee-track{
+  display:flex;
+  gap:2rem;
+  animation:scroll 25s linear infinite;
+  white-space:nowrap;
+  font:800 .95rem var(--mono);
+  text-transform:uppercase;
+  letter-spacing:.15em;
+  width:max-content;
+}
+
+.marquee-track span{display:inline-flex;align-items:center;gap:2rem}
+.marquee-track span::after{content:'✦';color:var(--hot)}
+
+@keyframes scroll{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+
+/* HERO */
+.hero{
+  max-width:1200px;
+  margin:0 auto;
+  padding:4rem 1.5rem 3rem;
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:3rem;
+  align-items:center;
+}
+
+.hero-eyebrow{
+  display:inline-block;
+  background:var(--ink);
+  color:var(--lost);
+  font:800 .72rem var(--mono);
+  padding:.4rem 1rem;
+  border-radius:var(--radius-pill);
+  text-transform:uppercase;
+  letter-spacing:.15em;
+  margin-bottom:1.2rem;
+  transform:rotate(-2deg);
+  box-shadow:3px 3px 0 var(--hot);
+}
+
+.hero h1{margin-bottom:1.4rem}
+
+.small-links{margin-top:1.8rem;gap:1.2rem;display:flex;flex-wrap:wrap}
+
+.hero-demo{display:grid;gap:1.2rem;position:relative}
+
+.demo-ticket{
+  background:var(--paper);
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius);
+  padding:1.2rem 1.4rem;
+  display:grid;gap:.4rem;
+  box-shadow:var(--shadow-brutal);
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+}
+
+.demo-ticket:hover{transform:translate(-4px,-4px) rotate(-1deg);box-shadow:10px 10px 0 var(--ink)}
+
+.demo-lost{background:linear-gradient(135deg,#fffde0 0%,#fff8b0 100%);transform:rotate(2deg)}
+.demo-found{background:linear-gradient(135deg,#e0f9ff 0%,#b8eeff 100%);transform:rotate(-2deg) translateX(1.5rem)}
+
+.demo-ticket strong{font-family:var(--display);font-weight:800;font-size:1rem;letter-spacing:-.02em;text-transform:uppercase}
+
+.demo-score{
+  justify-self:center;
+  background:var(--ink);
+  color:#fff;
+  border-radius:var(--radius-pill);
+  padding:.7rem 1.6rem;
+  display:flex;gap:.6rem;align-items:baseline;
+  border:2.5px solid var(--ink);
+  box-shadow:5px 5px 0 var(--hot);
+  transform:rotate(-1deg);
+}
+
+.demo-score strong{font:900 1.6rem var(--display);color:var(--lost);letter-spacing:-.04em}
+
+.steps{padding-left:1.4rem;max-width:60ch}
+.steps li{margin-bottom:.8rem;font-weight:500}
+.steps li::marker{color:var(--hot);font-weight:900}
+
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.5rem;margin-top:2rem}
+
+.feature{
+  background:var(--paper);
+  padding:1.5rem 1.4rem;
+  border-radius:var(--radius);
+  border:2.5px solid var(--ink);
+  box-shadow:var(--shadow-brutal-sm);
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+}
+
+.feature:nth-child(odd){transform:rotate(-.8deg)}
+.feature:nth-child(even){transform:rotate(.8deg);background:linear-gradient(135deg,#fff 0%,#fff5cc 100%)}
+.feature:hover{transform:translate(-4px,-4px) rotate(0deg);box-shadow:8px 8px 0 var(--ink)}
+.feature h3{margin-bottom:.5rem}
+.feature p{margin:0;color:var(--muted);font-weight:500}
+
+/* TICKET CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1.6rem}
+
+.ticket{
+  display:grid;
+  grid-template-columns:1fr 130px;
+  background:var(--paper);
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow-brutal-sm);
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+}
+
+.ticket:nth-child(3n){transform:rotate(-.6deg)}
+.ticket:nth-child(3n+1){transform:rotate(.6deg)}
+.ticket:hover{transform:translate(-5px,-5px) rotate(0deg);box-shadow:10px 10px 0 var(--ink)}
+
+.ticket-found{background:linear-gradient(135deg,#fff 0%,#e6faff 100%)}
+
+.ticket-main{padding:1.2rem 1.3rem;min-width:0}
+
+.ticket-kind{
+  font:800 .72rem var(--mono);
+  margin:0 0 .5rem;
+  color:var(--ink);
+  text-transform:uppercase;
+  letter-spacing:.15em;
+  display:inline-block;
+  background:var(--lost);
+  padding:.15rem .7rem;
+  border-radius:var(--radius-pill);
+  border:2px solid var(--ink);
+  transform:rotate(-1deg);
+}
+
+.ticket-found .ticket-kind{background:var(--found)}
+
+.ticket-desc{
+  color:var(--ink-soft);
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  font-weight:600;
+  font-size:.98rem;
+  line-height:1.4;
+}
+
+.facts{margin:.9rem 0 0;display:grid;gap:.3rem;font-size:.88rem}
+.facts div{display:flex;gap:.6rem}
+.facts dt{
+  color:var(--muted);
+  min-width:5rem;
+  font-weight:700;
+  font-family:var(--mono);
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  padding-top:.1rem;
+}
+.facts dd{margin:0;font-weight:600}
+
+.ticket-stub{
+  border-left:3px dashed var(--ink);
+  padding:1rem .8rem;
+  display:flex;flex-direction:column;gap:.7rem;
+  align-items:center;justify-content:space-between;
+  position:relative;
+  background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(0,0,0,.025) 8px,rgba(0,0,0,.025) 16px);
+}
+
+.ticket-stub::before,
+.ticket-stub::after{
+  content:'';
+  position:absolute;left:-13px;
+  width:22px;height:22px;
+  background:var(--bg);
+  border:2.5px solid var(--ink);
+  border-radius:50%;
+  z-index:2;
+}
+
+.ticket-stub::before{top:-12px}
+.ticket-stub::after{bottom:-12px}
+
+.ticket-stub img,
+.no-photo{
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+  border-radius:var(--radius-sm);
+  background:var(--lost);
+  border:2.5px solid var(--ink);
+  display:grid;place-items:center;
+  font:800 .72rem var(--mono);
+  color:var(--ink);
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  box-shadow:2px 2px 0 var(--ink);
+}
+
+.ticket-found .no-photo{background:var(--found)}
+
+.ticket-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+
+.badge,.pill{
+  font:800 .68rem var(--mono);
+  padding:.25rem .7rem;
+  border-radius:var(--radius-pill);
+  background:var(--paper);
+  border:2px solid var(--ink);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  box-shadow:2px 2px 0 var(--ink);
+  display:inline-block;
+  white-space:nowrap;
+}
+
+.badge-active{background:var(--lost)}
+.badge-matched,.pill-potential,.pill-confirmed{background:var(--lime)}
+.badge-returned,.pill-returned{background:var(--ink);color:var(--lost);border-color:var(--ink)}
+.pill-rejected{background:var(--bad);color:#fff}
+
+/* MATCH CARD */
+.match{
+  background:var(--paper);
+  border:3px solid var(--ink);
+  border-radius:var(--radius);
+  padding:1.8rem;
+  margin-bottom:2rem;
+  box-shadow:var(--shadow-brutal);
+  position:relative;
+  overflow:hidden;
+}
+
+.match-banner{
+  background:linear-gradient(135deg,#fff 0%,#e6ffe6 50%,#ccffcc 100%);
+  border-color:var(--ok);
+  box-shadow:8px 8px 0 var(--ok);
+  animation:matchPulse 2s ease-in-out infinite;
+}
+
+@keyframes matchPulse{
+  0%,100%{box-shadow:8px 8px 0 var(--ok)}
+  50%{box-shadow:8px 8px 0 var(--ok),0 0 60px rgba(0,230,118,.4)}
+}
+
+.match-title{
+  color:var(--ok);
+  font-size:clamp(1.5rem,4vw,2.2rem);
+  text-transform:uppercase;
+  font-weight:900;
+  letter-spacing:-.03em;
+}
+
+.match-pair{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:1.5rem;
+  align-items:center;
+  margin-top:1.2rem;
+}
+
+.match-side{
+  display:grid;gap:.3rem;
+  padding:1rem 1.2rem;
+  border-radius:var(--radius-sm);
+  border:2.5px solid var(--ink);
+  background:var(--paper);
+  box-shadow:var(--shadow-brutal-sm);
+}
+
+.match-lost{background:linear-gradient(135deg,#fffde0,#fff8b0)}
+.match-found{background:linear-gradient(135deg,#e0f9ff,#b8eeff)}
+
+.match-side strong{font-family:var(--display);font-weight:800;font-size:1rem;letter-spacing:-.02em;text-transform:uppercase}
+
+.match-score{
+  position:relative;
+  width:110px;height:110px;
+  display:grid;place-items:center;
+  text-align:center;
+  font:900 1.4rem var(--display);
+  color:var(--ink);
+}
+
+.match-score span,.match-score small{grid-area:1/1}
+.match-score small{
+  margin-top:2.6rem;
+  font:800 .65rem var(--mono);
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.1em;
+}
+
+.gauge{grid-area:1/1;width:100%;transform:rotate(-90deg)}
+.gauge circle{fill:none;stroke-width:5}
+.gauge-bg{stroke:#eee}
+.gauge-fg{stroke:var(--ok);stroke-linecap:round}
+
+.match-meta{
+  display:flex;flex-wrap:wrap;
+  gap:1rem 2rem;
+  justify-content:space-between;
+  margin-top:1.5rem;
+  align-items:center;
+  padding-top:1.2rem;
+  border-top:2px dashed var(--line);
+}
+
+.meta-label{
+  color:var(--muted);
+  margin-right:.5rem;
+  font-weight:800;
+  font-family:var(--mono);
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+
+.mails{list-style:none;margin:0;padding:0;display:flex;gap:1.2rem;flex-wrap:wrap}
+.mails li{display:flex;gap:.4rem;font-weight:600;font-size:.9rem}
+.mail-sent strong{color:var(--ok)}
+.mail-failed strong{color:var(--bad)}
+
+.explain{margin:1rem 0 0;color:var(--ink-soft);font-weight:500}
+.contact{margin:.5rem 0 0}
+
+/* FORMS */
+.form{display:grid;gap:1.8rem;margin-top:2rem}
+
+fieldset{
+  border:0;
+  border-top:3px solid var(--ink);
+  padding:1.5rem 0 0;
+  margin:0;
+  display:grid;gap:1cm;
+  min-width:0;
+  position:relative;
+}
+
+fieldset::before{
+  content:'';
+  position:absolute;
+  top:-3px;left:0;
+  width:60px;height:3px;
+  background:var(--hot);
+}
+
+legend{
+  font:900 1.1rem var(--display);
+  padding-right:1rem;
+  text-transform:uppercase;
+  letter-spacing:-.01em;
+}
+
+.field{display:grid;gap:.4rem}
+.field label{font-weight:800;font-size:.85rem;text-transform:uppercase;letter-spacing:.02em}
+.req{font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0}
+
+input,select,textarea{
+  font:600 1rem var(--body);
+  padding:.8rem 1rem;
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius-sm);
+  background:var(--paper);
+  color:inherit;
+  width:100%;
+  transition:all .15s;
+  box-shadow:2px 2px 0 var(--ink);
+  font-family:var(--body);
+}
+
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  transform:translate(-2px,-2px);
+  box-shadow:5px 5px 0 var(--hot);
+}
+
+.has-error input,.has-error select,.has-error textarea{
+  border-color:var(--bad);
+  background:#ffe6e6;
+}
+
+.error{color:var(--bad);font-weight:800;font-size:.85rem}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1cm}
+.auth .form{max-width:480px}
+
+/* FILTERS / TABS / TABLE */
+.filters{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:1cm;
+  margin:1.5rem 0 2rem;
+  padding:1.2rem;
+  background:var(--paper);
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-brutal-sm);
+}
+
+.filters input[name='search']{grid-column:span 2}
+
+.tabs{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.5rem 0 2rem}
+
+.tab{
+  font:800 .82rem var(--body);
+  padding:.5rem 1.1rem;
+  border-radius:var(--radius-pill);
+  border:2.5px solid var(--ink);
+  background:var(--paper);
+  cursor:pointer;
+  transition:all .15s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:3px 3px 0 var(--ink);
+  text-transform:uppercase;
+  letter-spacing:.02em;
+}
+
+.tab:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.tab.active{background:var(--ink);color:var(--lost);box-shadow:3px 3px 0 var(--hot)}
+.count{opacity:.7;margin-left:.3rem;font-family:var(--mono)}
+
+.banner{
+  padding:1rem 1.3rem;
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius-sm);
+  margin:1.2rem 0;
+  font-weight:700;
+  box-shadow:var(--shadow-brutal-sm);
+}
+
+.banner-ok{background:var(--lime)}
+.banner-error{background:#ffcdd2;color:#5a0000}
+.banner-warn{background:#ffe0b2;color:#5a3300}
+
+.empty{
+  padding:3rem 2rem;
+  text-align:center;
+  background:var(--paper);
+  border:2.5px dashed var(--ink);
+  border-radius:var(--radius);
+  font-weight:700;
+  font-size:1.05rem;
+  color:var(--muted);
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:1.2rem;
+  margin:1.5rem 0;
+}
+
+.stat{
+  background:var(--paper);
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius);
+  padding:1.3rem;
+  display:grid;
+  gap:.3rem;
+  box-shadow:var(--shadow-brutal-sm);
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+}
+
+.stat:nth-child(2n){background:linear-gradient(135deg,#fff,#fff8b0);transform:rotate(-1deg)}
+.stat:nth-child(2n+1){background:linear-gradient(135deg,#fff,#e0f9ff);transform:rotate(1deg)}
+.stat:hover{transform:rotate(0) translate(-3px,-3px);box-shadow:7px 7px 0 var(--ink)}
+
+.stat strong{font:900 2.4rem var(--display);letter-spacing:-.05em;color:var(--ink);line-height:1}
+.stat span{font:800 .72rem var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+
+.threshold{
+  display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;
+  background:var(--paper);
+  padding:1.2rem 1.4rem;
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-brutal-sm);
+}
+
+.threshold input{width:120px}
+
+.table-wrap{
+  overflow-x:auto;
+  background:var(--paper);
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-brutal-sm);
+}
+
+table{width:100%;border-collapse:collapse;min-width:720px}
+
+th,td{text-align:left;padding:.9rem 1rem;border-bottom:2px solid #eee;vertical-align:top}
+
+th{
+  font:800 .72rem var(--mono);
+  color:var(--ink);
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  background:var(--lost);
+  border-bottom:2.5px solid var(--ink);
+}
+
+tr:last-child td{border-bottom:none}
+.actions{display:flex;gap:.5rem;flex-wrap:wrap}
+
+.loading{
+  display:flex;align-items:center;justify-content:center;
+  gap:.8rem;
+  padding:3rem;
+  color:var(--muted);
+  font:800 .95rem var(--mono);
+  text-transform:uppercase;
+  letter-spacing:.1em;
+}
+
+.spinner{
+  width:26px;height:26px;
+  border:4px solid #ddd;
+  border-top-color:var(--hot);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.footer{
+  background:var(--ink);
+  color:var(--lost);
+  padding:2.5rem 1.5rem;
+  text-align:center;
+  font-size:.9rem;
+  margin-top:3rem;
+  border-top:2.5px solid var(--ink);
+  position:relative;
+  z-index:2;
+}
+
+.footer p{margin:.3rem 0;font-weight:600}
+.footer .muted{color:#6b6b8a}
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:2.5rem;gap:2.5rem}
+  .demo-found{transform:rotate(-2deg)}
+  .nav-toggle{display:block}
+  .nav-links{
+    display:none;width:100%;
+    flex-direction:column;align-items:stretch;
+    padding:1rem 0;gap:.8rem;
+  }
+  .nav-links.open{display:flex}
+  .nav{border-radius:var(--radius);top:.5rem}
+  .nav-links a:not(.btn){text-align:center;padding:.5rem}
+  .match-pair{grid-template-columns:1fr;gap:1.5rem}
+}
+
+@media (max-width:600px){
+  .cards{grid-template-columns:1fr}
+  .ticket{grid-template-columns:1fr 100px}
+  .grid-2{grid-template-columns:1fr}
+  .filters input[name='search']{grid-column:auto}
+  h1{font-size:clamp(2rem,11vw,3.5rem)}
+  .ticket:nth-child(3n),.ticket:nth-child(3n+1),.feature{transform:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+    scroll-behavior:auto!important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>LOST SOMETHING? POST IT</span>
+    <span>FOUND SOMETHING? REPORT IT</span>
+    <span>CLAIM YOUR TICKET</span>
+    <span>GET IT BACK FAST</span>
+    <span>LOST SOMETHING? POST IT</span>
+    <span>FOUND SOMETHING? REPORT IT</span>
+    <span>CLAIM YOUR TICKET</span>
+    <span>GET IT BACK FAST</span>
+  </div>
+</div>
+
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="/">
+    <span class="brand-mark" aria-hidden="true"></span>
+    lost+found
+  </a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" type="button">menu</button>
+  <div class="nav-links" id="nav-links">
+    <a href="/" class="active">home</a>
+    <a href="/reports">reports</a>
+    <a href="/matches">matches</a>
+    <a href="/dashboard">dashboard</a>
+    <a href="/login" class="btn btn-quiet btn-small">log in</a>
+    <a href="/report" class="btn btn-dark btn-small">+ report</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-text">
+    <span class="hero-eyebrow">✦ find it fast</span>
+    <h1>lost it?<br><em>found it.</em></h1>
+    <p class="lead">
+      The lost+found board that actually works. Post a ticket, get matched,
+      get your stuff back. Perforated stubs, hi-vis yellow, signal blue —
+      it's <strong style="background:var(--lost);padding:.05rem .35rem;border-radius:6px;">organized chaos</strong>.
+    </p>
+    <div class="small-links">
+      <a href="/report" class="btn btn-lost btn-big">📌 report an item</a>
+      <a href="/reports" class="btn btn-found btn-big">🔍 browse reports</a>
+    </div>
+  </div>
+
+  <div class="hero-demo" aria-hidden="true">
+    <div class="demo-ticket demo-lost">
+      <strong>black jansport backpack</strong>
+      <span class="muted" style="font-weight:600;font-size:.88rem;">library · 2nd floor · 4:20pm</span>
+    </div>
+    <div class="demo-ticket demo-found">
+      <strong>black jansport backpack</strong>
+      <span class="muted" style="font-weight:600;font-size:.88rem;">lost &amp; found desk · b12</span>
+    </div>
+    <div class="demo-score">
+      <strong>94%</strong>
+      <span style="font-weight:700;font-size:.9rem;">match</span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <section>
+    <h2>how it works ✦</h2>
+    <ol class="steps">
+      <li><strong>drop a ticket</strong> — describe your item, add a photo, tag the location.</li>
+      <li><strong>we scan the board</strong> — matching runs automatically against every found report.</li>
+      <li><strong>claim the stub</strong> — confirm the match, meet up, get your thing back.</li>
+      <li><strong>item returned</strong> — mark it returned. the ticker goes up.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 style="margin-top:3rem;">why it hits ✦</h2>
+    <div class="feature-grid">
+      <div class="feature">
+        <h3>⚡ auto-matching</h3>
+        <p>Our matcher compares text, location, and time. You just confirm the match.</p>
+      </div>
+      <div class="feature">
+        <h3>🎟️ claim tickets</h3>
+        <p>Every report gets a perforated stub. Physical-feeling, screen-friendly.</p>
+      </div>
+      <div class="feature">
+        <h3>📬 email alerts</h3>
+        <p>Match found? You get a ping. No refreshing, no doom-scrolling.</p>
+      </div>
+      <div class="feature">
+        <h3>🔒 safe handoff</h3>
+        <p>Contact info only shared after you confirm the match. No sketchy DMs.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-top:4rem;">
+    <h2>a match looks like this ✦</h2>
+
+    <div class="match match-banner">
+      <h3 class="match-title">it's a match!</h3>
+      <div class="match-pair">
+        <div class="match-side match-lost">
+          <span class="meta-label">lost report</span>
+          <strong>black jansport backpack</strong>
+          <span class="muted" style="font-size:.82rem;font-weight:600;">library · 2nd floor</span>
+        </div>
+        <div class="match-score">
+          <svg class="gauge" viewBox="0 0 36 36" aria-hidden="true">
+            <circle class="gauge-bg" cx="18" cy="18" r="15.9"></circle>
+            <circle class="gauge-fg" cx="18" cy="18" r="15.9"
+              stroke-dasharray="94, 100" stroke-dashoffset="0"></circle>
+          </svg>
+          <span>94%</span>
+          <small>score</small>
+        </div>
+        <div class="match-side match-found">
+          <span class="meta-label">found report</span>
+          <strong>black backpack</strong>
+          <span class="muted" style="font-size:.82rem;font-weight:600;">lost &amp; found desk · b12</span>
+        </div>
+      </div>
+      <div class="match-meta">
+        <div>
+          <span class="meta-label">emails</span>
+          <ul class="mails">
+            <li class="mail-sent">→ lost reporter <strong>sent</strong></li>
+            <li class="mail-sent">→ finder <strong>sent</strong></li>
+          </ul>
+        </div>
+        <div class="actions">
+          <button class="btn btn-found" type="button">confirm match</button>
+          <button class="btn btn-quiet btn-small" type="button">dismiss</button>
+        </div>
+      </div>
+      <p class="explain">
+        <strong>why this matched:</strong> same color (black), same item type (backpack),
+        locations 200m apart, times 3 hours apart. Confidence high.
+      </p>
+    </div>
+  </section>
+
+  <section style="margin-top:4rem;">
+    <h2>recent reports ✦</h2>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" type="button">all <span class="count">12</span></button>
+      <button class="tab" type="button">lost <span class="count">7</span></button>
+      <button class="tab" type="button">found <span class="count">5</span></button>
+      <button class="tab" type="button">matched <span class="count">3</span></button>
+    </div>
+
+    <div class="filters">
+      <input type="search" name="search" placeholder="search reports…" aria-label="Search reports">
+      <select aria-label="Filter by location"><option>any location</option></select>
+      <select aria-label="Filter by category"><option>any category</option></select>
+    </div>
+
+    <div class="cards">
+      <article class="ticket">
+        <div class="ticket-main">
+          <p class="ticket-kind">lost · active</p>
+          <p class="ticket-desc">AirPods Pro case with a tiny dinosaur sticker on the back. Left it on the table near the window.</p>
+          <dl class="facts">
+            <div><dt>location</dt><dd>cafeteria · table 4</dd></div>
+            <div><dt>when</dt><dd>today, 12:40pm</dd></div>
+            <div><dt>contact</dt><dd>via ticket stub</dd></div>
+          </dl>
+          <div class="ticket-actions">
+            <button class="btn btn-lost btn-small" type="button">this is mine</button>
+            <button class="btn btn-quiet btn-small" type="button">share</button>
+          </div>
+        </div>
+        <div class="ticket-stub">
+          <div class="no-photo">no photo</div>
+          <span class="badge badge-active">active</span>
+        </div>
+      </article>
+
+      <article class="ticket ticket-found">
+        <div class="ticket-main">
+          <p class="ticket-kind">found · matched</p>
+          <p class="ticket-desc">Blue hydroflask with a dent on the bottom. Found by the bike racks near the science building.</p>
+          <dl class="facts">
+            <div><dt>location</dt><dd>bike racks · sci</dd></div>
+            <div><dt>when</dt><dd>yesterday, 5:15pm</dd></div>
+            <div><dt>contact</dt><dd>via ticket stub</dd></div>
+          </dl>
+          <div class="ticket-actions">
+            <button class="btn btn-found btn-small" type="button">claim</button>
+            <button class="btn btn-quiet btn-small" type="button">details</button>
+          </div>
+        </div>
+        <div class="ticket-stub">
+          <div class="no-photo">no photo</div>
+          <span class="badge badge-matched">matched</span>
+        </div>
+      </article>
+
+      <article class="ticket">
+        <div class="ticket-main">
+          <p class="ticket-kind">lost · returned</p>
+          <p class="ticket-desc">Grey crewneck sweatshirt, size M, small coffee stain on the left cuff. Sentimental value.</p>
+          <dl class="facts">
+            <div><dt>location</dt><dd>auditorium · row f</dd></div>
+            <div><dt>when</dt><dd>last friday</dd></div>
+            <div><dt>contact</dt><dd>via ticket stub</dd></div>
+          </dl>
+          <div class="ticket-actions">
+            <button class="btn btn-quiet btn-small" type="button">view thread</button>
+          </div>
+        </div>
+        <div class="ticket-stub">
+          <div class="no-photo">no photo</div>
+          <span class="badge badge-returned">returned</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section style="margin-top:4rem;">
+    <h2>the numbers ✦</h2>
+    <div class="stat-grid">
+      <div class="stat"><strong>248</strong><span>items returned</span></div>
+      <div class="stat"><strong>94%</strong><span>match accuracy</span></div>
+      <div class="stat"><strong>1.2h</strong><span>avg. time to match</span></div>
+      <div class="stat"><strong>0</strong><span>sketchy handoffs</span></div>
+    </div>
+  </section>
+
+  <section style="margin-top:4rem;">
+    <h2>drop a ticket ✦</h2>
+    <form class="form" onsubmit="event.preventDefault();">
+      <fieldset>
+        <legend>what happened</legend>
+        <div class="field">
+          <label for="rtype">report type <span class="req">(required)</span></label>
+          <select id="rtype">
+            <option>I lost something</option>
+            <option>I found something</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="rdesc">description <span class="req">(required)</span></label>
+          <textarea id="rdesc" rows="4" placeholder="describe it like you're telling a friend…"></textarea>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>where + when</legend>
+        <div class="grid-2">
+          <div class="field">
+            <label for="rloc">location</label>
+            <input id="rloc" type="text" placeholder="e.g. library, 2nd floor">
+          </div>
+          <div class="field">
+            <label for="rwhen">when</label>
+            <input id="rwhen" type="text" placeholder="e.g. today, ~4pm">
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="row">
+        <button class="btn btn-lost btn-big" type="submit">submit ticket 🎟️</button>
+        <button class="btn btn-quiet" type="button">save draft</button>
+      </div>
+    </form>
+  </section>
+
+  <section style="margin-top:4rem;">
+    <h2>admin view ✦</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ticket</th>
+            <th>type</th>
+            <th>status</th>
+            <th>score</th>
+            <th>actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>#A-1042</strong><br><span class="muted">black backpack</span></td>
+            <td>lost</td>
+            <td><span class="pill pill-confirmed">confirmed</span></td>
+            <td><strong>94%</strong></td>
+            <td><div class="actions"><button class="btn btn-quiet btn-small" type="button">view</button><button class="btn btn-quiet btn-small" type="button">close</button></div></td>
+          </tr>
+          <tr>
+            <td><strong>#A-1041</strong><br><span class="muted">blue hydroflask</span></td>
+            <td>found</td>
+            <td><span class="pill pill-potential">potential</span></td>
+            <td><strong>87%</strong></td>
+            <td><div class="actions"><button class="btn btn-quiet btn-small" type="button">view</button><button class="btn btn-quiet btn-small" type="button">close</button></div></td>
+          </tr>
+          <tr>
+            <td><strong>#A-1039</strong><br><span class="muted">grey crewneck</span></td>
+            <td>lost</td>
+            <td><span class="pill pill-returned">returned</span></td>
+            <td><strong>—</strong></td>
+            <td><div class="actions"><button class="btn btn-quiet btn-small" type="button">view</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section style="margin-top:3rem;">
+    <div class="banner banner-ok">✓ match confirmed — emails sent to both parties</div>
+    <div class="banner banner-warn">⚠ pending verification — waiting on finder to confirm</div>
+    <div class="banner banner-error">✕ report rejected — duplicate of #A-1039</div>
+  </section>
+
+  <div class="loading" style="margin-top:3rem;">
+    <span class="spinner"></span>
+    loading…
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p><strong>lost+found</strong> — built to get your stuff back.</p>
+  <p class="muted">all claim tickets. © forever.</p>
+</footer>
+
+<script>
+  (function(){
+    var toggle = document.querySelector('.nav-toggle');
+    var links = document.getElementById('nav-links');
+    if (toggle && links) {
+      toggle.addEventListener('click', function(){
+        var open = links.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+
+    var tabs = document.querySelectorAll('.tab');
+    tabs.forEach(function(t){
+      t.addEventListener('click', function(){
+        tabs.forEach(function(x){ x.classList.remove('active'); });
+        t.classList.add('active');
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+rules_version = '2';
+// All sensitive writes (reports, matches, notifications, settings) happen in the
+// serverless API using the Admin SDK, which bypasses these rules.
+// Browsers may only READ their own data, and edit their own profile document.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    // Owners can read their own reports (real-time "My reports"). Nobody can write from the client,
+    // so status, embedding and matching fields cannot be tampered with.
+    match /reports/{reportId} {
+      allow read: if signedIn() && resource.data.userId == request.auth.uid;
+      allow write: if false;
+    }
+
+    // Only the two people in a match can read it. similarityScore / status cannot be edited by clients.
+    match /matches/{matchId} {
+      allow read: if signedIn() &&
+        (resource.data.lostUserId == request.auth.uid || resource.data.foundUserId == request.auth.uid);
+      allow write: if false;
+    }
+
+    // Private notification log: server only.
+    match /notifications/{id} { allow read, write: if false; }
+
+    // Admin settings (threshold): server only.
+    match /settings/{id} { allow read, write: if false; }
+
+    // A user profile may be created/updated only by that user, with only these fields.
+    match /users/{userId} {
+      allow read: if signedIn() && request.auth.uid == userId;
+      allow create: if signedIn() && request.auth.uid == userId &&
+        request.resource.data.keys().hasOnly(['displayName', 'email', 'createdAt']);
+      allow update: if signedIn() && request.auth.uid == userId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName']);
+      allow delete: if false;
+    }
+  }
+}

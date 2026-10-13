@@ -1,0 +1,12 @@
+rules_version = '2';
+// Optional photo upload: signed-in users may upload images (<3 MB) only into their own folder.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /reportImages/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId
+        && request.resource.size < 3 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+  }
+}
